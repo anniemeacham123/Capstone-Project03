@@ -8,3 +8,15 @@ aws ec2 import-key-pair \
   --key-name capstone-eks-key \
   --public-key-material fileb://~/.ssh/capstone-eks-key.pub
 ```
+Create Cluster
+```
+eksctl create cluster \
+  --name monitoring-lab \
+  --region us-east-1 \
+  --nodes 3 \
+  --node-type t3.large \
+  --with-oidc \
+  --ssh-access \
+  --ssh-public-key gitops-eks-key \
+  --managed
+```
