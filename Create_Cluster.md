@@ -11,12 +11,12 @@ aws ec2 import-key-pair \
 Create Cluster
 ```
 eksctl create cluster \
-  --name monitoring-lab \
+  --name capstone \
   --region us-east-1 \
   --nodes 3 \
   --node-type t3.large \
   --with-oidc \
   --ssh-access \
-  --ssh-public-key gitops-eks-key \
+  --ssh-public-key capstone-eks-key \
   --managed
 ```
