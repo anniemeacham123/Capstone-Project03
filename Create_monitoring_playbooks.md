@@ -1,6 +1,6 @@
 ### We need to set up a playbook that allows Argocd access to Cluster and can monitor it and set up automation.
 
-'''
+```
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -26,4 +26,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-'''
+```
