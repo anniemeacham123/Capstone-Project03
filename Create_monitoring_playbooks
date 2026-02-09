@@ -1,0 +1,28 @@
+### We need to set up a playbook that allows Argocd access to Cluster and can monitor it and set up automation.
+'''
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: capstone
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Ali0926/Platform-Engineering-Capstone-Project  
+    targetRevision: HEAD
+    path: apps/capstone
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: (not sure yet)
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+'''
