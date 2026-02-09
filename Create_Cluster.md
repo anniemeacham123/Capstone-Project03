@@ -19,4 +19,9 @@ eksctl create cluster \
   --ssh-access \
   --ssh-public-key capstone-eks-key \
   --managed
+
+ eksctl create addon \
+  --name aws-ebs-csi-driver \
+  --cluster monitoring-lab \
+  --region us-east-1
 ```
