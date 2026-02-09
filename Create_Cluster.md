@@ -56,7 +56,7 @@ kubectl get applications -n argocd
 
 ### Grafana
 ```bash
-kubectl get svc grafana-lb -n monitoring -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+kubectl get svc grafana-lb -n capstone -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
 ```
 Default credentials: `admin` / `admin`
 
