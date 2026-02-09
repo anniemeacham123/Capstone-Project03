@@ -22,6 +22,6 @@ eksctl create cluster \
 
  eksctl create addon \
   --name aws-ebs-csi-driver \
-  --cluster monitoring-lab \
+  --cluster capstone \
   --region us-east-1
 ```
