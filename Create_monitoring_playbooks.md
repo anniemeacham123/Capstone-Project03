@@ -1,9 +1,9 @@
-### We need to set up playbooks for monitoring 
+## We need to set up playbooks for monitoring 
 
 
-## apps/argocd-apps/k8s-monitoring.yaml the file below defines the argocd application resource.
+### apps/argocd-apps/k8s-monitoring.yaml the file below defines the argocd application resource.
 ```
-notes on what this yaml is doing:
+Notes on what the following playbook is doing:
 It also deletes all the clusters if you delete the Argo CD application (resource-finalizer)
 It points to our repo for the configuration 
 It deploys the resources below ti the cluster in a namespace called monitoring. Argo will create it once this is deployed.
@@ -37,4 +37,5 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ```
+
 
