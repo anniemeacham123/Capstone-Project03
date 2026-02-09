@@ -25,3 +25,18 @@ eksctl create cluster \
   --cluster capstone \
   --region us-east-1
 ```
+Configure kubectl
+```
+aws eks update-kubeconfig --name capstone --region us-east-1
+```
+Verify
+```
+kubectl get nodes
+```
+Install ArgoCD
+```
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
+```
