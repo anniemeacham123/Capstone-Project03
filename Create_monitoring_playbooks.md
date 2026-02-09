@@ -1,5 +1,5 @@
 ## We need to set up playbooks for monitoring 
-
+Pulled files from k8s-argo-monitoring
 
 ### apps/argocd-apps/k8s-monitoring.yaml the file below defines the argocd application resource.
 ```
@@ -37,5 +37,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ```
+
+
 
 
