@@ -6,8 +6,8 @@ terraform {
 
   backend "s3" {
     # Pass bucket at init: terraform init -backend-config="bucket=YOUR_BUCKET"
-    key     = "state/monitoring-lab/terraform.tfstate"
-    region  = "us-east-1"
+    key     = "state/capstone/terraform.tfstate"
+    region  = "us-west-1"
     encrypt = true
   }
 
@@ -23,11 +23,11 @@ terraform {
 # Variables
 ########################
 variable "region" {
-  default = "us-east-1"
+  default = "us-west-1"
 }
 
 variable "cluster_name" {
-  default = "monitoring-lab"
+  default = "capstone"
 }
 
 ########################
@@ -48,10 +48,12 @@ data "aws_availability_zones" "available" {
 
 locals {
   cluster_name = var.cluster_name
-  vpc_name = "${var.cluster_name}-vpc"
+  vpc_name     = "${var.cluster_name}-vpc"
 }
 
-
+########################
+# VPC
+########################
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.8.1"
@@ -106,30 +108,25 @@ resource "aws_security_group" "allow_all" {
   }
 }
 
+########################
+# EKS
+########################
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
 
-  name            = local.cluster_name
-  kubernetes_version        = "1.33"
+  name               = local.cluster_name
+  kubernetes_version = "1.33"
 
-  endpoint_public_access           = true
+  endpoint_public_access                   = true
   enable_cluster_creator_admin_permissions = true
-
-  addons = {
-    eks-pod-identity-agent = {
-      most_recent = true
-    }
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
-    }
-  }
-
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  # Attach open security group to cluster
+  # NOTE: Your explicit SG resource is created above, but the EKS module
+  # uses its own security groups unless you explicitly pass IDs in.
+  # These rules still apply to the module-managed SGs.
   security_group_additional_rules = {
     ingress_all = {
       description = "All inbound - LAB ONLY"
@@ -152,9 +149,19 @@ module "eks" {
     }
   }
 
+  # Addons - set AFTER IRSA role exists
+  addons = {
+    eks-pod-identity-agent = {
+      most_recent = true
+    }
+    aws-ebs-csi-driver = {
+      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
+    }
+  }
+
   eks_managed_node_groups = {
     one = {
-      name = "node-group-1"
+      name           = "capstone-node-group"
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["t3.large"]
 
@@ -165,6 +172,9 @@ module "eks" {
   }
 }
 
+########################
+# IRSA for EBS CSI
+########################
 data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
