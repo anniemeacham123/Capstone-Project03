@@ -6,7 +6,7 @@ terraform {
 
   backend "s3" {
     key     = "state/capstone/terraform.tfstate"
-    region  = "us-west-1"
+    region  = "us-east-1"
     encrypt = true
   }
 
@@ -22,7 +22,7 @@ terraform {
 # Variables
 ########################
 variable "region" {
-  default = "us-west-1"
+  default = "us-east-1"
 }
 
 variable "cluster_name" {
@@ -185,3 +185,4 @@ output "cluster_name" {
 output "configure_kubectl" {
   value = "aws eks update-kubeconfig --region ${var.region} --name ${module.eks.cluster_name}"
 }
+
