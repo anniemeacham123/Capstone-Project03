@@ -1,4 +1,14 @@
-### We need to set up a playbook that allows Argocd access to Cluster and can monitor it and set up automation.
+### We need to set up playbooks for monitoring 
+
+
+## apps/argocd-apps/k8s-monitoring.yaml the file below defines the argocd application resource.
+```
+notes on what this yaml is doing:
+It also deletes all the clusters if you delete the Argo CD application (resource-finalizer)
+It points to our repo for the configuration 
+It deploys the resources below ti the cluster in a namespace called monitoring. Argo will create it once this is deployed.
+It has auto-sync meaning it automatically updates as the github repo updates
+```
 
 ```
 apiVersion: argoproj.io/v1alpha1
@@ -19,7 +29,7 @@ spec:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: (not sure yet)
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true
@@ -27,3 +37,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ```
+
