@@ -4,6 +4,8 @@ prometheus:
   
   prometheus-node-exporter:
     enabled: true 
+    tolerations:
+      - operator: "Exists"
   
   kube-state-metrics:
     enabled: true  
