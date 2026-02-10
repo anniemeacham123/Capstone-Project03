@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/d-blanco/k8s-argo-monitoring.git
+    repoURL: https://github.com/Ali0926/Platform-Engineering-Capstone-Project.git
     targetRevision: HEAD
     path: apps/prometheus-crds
     helm:
@@ -26,3 +26,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - Replace=true  # CRDs need replace
+
