@@ -1,9 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from prometheus_fastapi_instrumentator import Instrumentator
 import os
 import uuid
 
 app = FastAPI(title="Capstone Ops API")
+Instrumentator().instrument(app).expose(app)
 
 class RunRequest(BaseModel):
     playbook: str = "submit_jcl.yml"
