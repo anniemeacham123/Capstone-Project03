@@ -57,7 +57,7 @@ jobs:
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./api/src
           push: true
@@ -65,12 +65,4 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Trigger ArgoCD Sync
-        if: github.ref == 'refs/heads/main'
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.ARGOCD_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            https://YOUR_ARGOCD_SERVER/api/v1/applications/YOUR_APP_NAME/sync \
-            -d '{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}'
-        continue-on-error: true
+     
