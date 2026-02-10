@@ -38,6 +38,51 @@ spec:
       - CreateNamespace=true
 ```
 
+### Updated Prometheus Values.yaml file
+```
+prometheus:
+  alertmanager:
+    enabled: true  
+  
+  prometheus-node-exporter:
+    enabled: true 
+  
+  kube-state-metrics:
+    enabled: true  
+
+  server:
+    service:
+      type: LoadBalancer
+    
+    extraFlags:
+      - "web.enable-remote-write-receiver"
+
+    extraScrapeConfigs: |
+      # 1. Scrape the Legacy Batch System
+      - job_name: 'legacy-batch-system'
+        static_configs:
+          - targets: ['<LEGACY_SERVER_IP>:9100'] # Assumes node-exporter on legacy box
+        metrics_path: /metrics
+
+      # 2. Scrape External Linux Servers
+      - job_name: 'external-linux-nodes'
+        static_configs:
+          - targets: ['<LINUX_SERVER_1_IP>:9100', '<LINUX_SERVER_2_IP>:9100']
+
+    persistentVolume:
+      enabled: true
+      storageClass: "gp3"
+      size: 20Gi 
+
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+```
+
 
 
 
