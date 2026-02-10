@@ -21,7 +21,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Ali0926/Platform-Engineering-Capstone-Project  
+    repoURL: https://github.com/Ali0926/Platform-Engineering-Capstone-Project.git  
     targetRevision: HEAD
     path: apps/capstone
     helm:
@@ -61,7 +61,7 @@ prometheus:
       # 1. Scrape the Legacy Batch System
       - job_name: 'legacy-batch-system'
         static_configs:
-          - targets: ['<LEGACY_SERVER_IP>:9100'] # Assumes node-exporter on legacy box
+          - targets: ['<LEGACY_SERVER_IP>:9100'] 
         metrics_path: /metrics
 
       # 2. Scrape External Linux Servers
@@ -95,7 +95,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/anniemeacham123/Platform-Engineering-Capstone-Project.git
+    repoURL: https://github.com/Ali0926/Platform-Engineering-Capstone-Project.git
     targetRevision: main  
     path: apps/prometheus
     helm:
