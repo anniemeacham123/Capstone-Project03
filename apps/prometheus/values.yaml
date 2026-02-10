@@ -15,6 +15,13 @@ prometheus:
   prometheus-node-exporter:
     enabled: false
 
+   extraScrapeConfigs: |
+    - job_name: "EC2-nodes"
+      static_configs:
+        - targets:
+          - 44.200.151.8:9100
+          - 34.207.84.106:9100 
+          
   # Prometheus server
   server:
     service:
@@ -36,6 +43,7 @@ prometheus:
       limits:
         cpu: 500m
         memory: 1Gi
+
 
 
 
