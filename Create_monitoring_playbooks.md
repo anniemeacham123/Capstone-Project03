@@ -82,6 +82,47 @@ prometheus:
         cpu: 1000m
         memory: 2Gi
 ```
+Past one:
+```
+/* # Prometheus (standalone) - Lab Configuration
+# Chart: prometheus 27.0.0
+
+prometheus:
+  # Disable components we don't need
+  alertmanager:
+    enabled: false
+
+  prometheus-pushgateway:
+    enabled: false
+
+  kube-state-metrics:
+    enabled: false
+
+  prometheus-node-exporter:
+    enabled: false
+
+  # Prometheus server
+  server:
+    service:
+      type: LoadBalancer
+
+    # Enable remote write receiver for Alloy/Tempo
+    extraFlags:
+      - "web.enable-remote-write-receiver"
+
+    persistentVolume:
+      enabled: true
+      storageClass: "gp3"
+      size: 10Gi
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+```
 
 ### Updated Prometheus playbook book from path apps/argocd-apps/prometheus.yaml:
 ```
