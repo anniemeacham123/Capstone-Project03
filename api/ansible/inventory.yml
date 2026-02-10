@@ -6,5 +6,5 @@ all:
           ansible_host: 67.217.62.83
       vars:
         ansible_user: IBMUSER
-        ansible_ssh_private_key_file: id_rsa
+        ansible_ssh_private_key_file: mainframe_key.pem
         ansible_python_interpreter: /usr/lpp/IBM/cyp/v3r11/pyz/bin/python    
