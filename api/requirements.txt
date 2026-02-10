@@ -3,3 +3,4 @@ uvicorn[standard]
 ansible
 ansible-runner
 pydantic
+prometheus-fastapi-instrumentator==7.1.0
