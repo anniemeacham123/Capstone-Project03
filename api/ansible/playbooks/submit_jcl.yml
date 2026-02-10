@@ -1,0 +1,7 @@
+- name: Capstone test playbook
+  hosts: local
+  gather_facts: false
+  tasks:
+    - name: Test Ansible execution
+      debug:
+        msg: "Ansible was triggered by the API successfully"
