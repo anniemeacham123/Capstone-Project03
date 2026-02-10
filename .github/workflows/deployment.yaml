@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: s3-api
+  template:
+    metadata:
+      labels:
+        app: s3-api
+    spec:
+      containers:
+      - name: api
+        image: YOUR_DOCKER_USERNAME/s3-api:main-latest  # References latest build
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: NODE_ENV
+          value: "production"
