@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/d-blanco/k8s-argo-monitoring.git
+    repoURL: https://github.com/Ali0926/Platform-Engineering-Capstone-Project.git
     targetRevision: HEAD
     path: apps/storage-class
   destination:
@@ -20,3 +20,4 @@ spec:
     automated:
       prune: true
       selfHeal: true
+
