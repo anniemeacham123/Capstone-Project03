@@ -83,6 +83,37 @@ prometheus:
         memory: 2Gi
 ```
 
+### Updated Prometheus playbook book from path apps/argocd-apps/prometheus.yaml:
+```
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/anniemeacham123/Platform-Engineering-Capstone-Project.git
+    targetRevision: main  
+    path: apps/prometheus
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: capstone1 #change yours to "capstone" I had to use capstone1 because I made another cluster
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true     
+      - ApplyOutOfSyncOnly=true
+```
+
 
 
 
