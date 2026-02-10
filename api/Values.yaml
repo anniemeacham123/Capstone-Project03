@@ -3,9 +3,7 @@ prometheus:
     enabled: true  
   
   prometheus-node-exporter:
-    enabled: true
-    service:
-      hostPort: 9101
+    enabled: false
   
   kube-state-metrics:
     enabled: true  
