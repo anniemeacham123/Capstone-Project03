@@ -1,38 +1,51 @@
-# Prometheus (standalone) - Lab Configuration
-# Chart: prometheus 27.0.0
-
 prometheus:
-  # Disable components we don't need
   alertmanager:
-    enabled: false
-
-  prometheus-pushgateway:
-    enabled: false
-
-  kube-state-metrics:
-    enabled: false
-
+    enabled: true  
+  
   prometheus-node-exporter:
-    enabled: false
+    enabled: true 
+  
+  kube-state-metrics:
+    enabled: true  
 
-  # Prometheus server
   server:
     service:
       type: LoadBalancer
-
-    # Enable remote write receiver for Alloy/Tempo
+    
     extraFlags:
       - "web.enable-remote-write-receiver"
+
+    extraScrapeConfigs: |
+      # 1. Scrape the Legacy Batch System
+      - job_name: 'legacy-batch-system'
+        static_configs:
+          - targets: ['<LEGACY_SERVER_IP>:9100'] 
+        metrics_path: /metrics
+
+      # 2. Scrape External Linux Servers
+      - job_name: 'external-linux-nodes'
+        static_configs:
+          - targets: ['<LINUX_SERVER_1_IP>:9100', '<LINUX_SERVER_2_IP>:9100']
+          
+      # 3. Scrape the Capstone Ops API (app.py)
+      - job_name: 'capstone-ops-api'
+        static_configs:
+          - targets: ['fastapi.fastapi.svc.cluster.local:8000']
+        metrics_path: /metrics
+        scrape_interval: 15s
 
     persistentVolume:
       enabled: true
       storageClass: "gp3"
-      size: 10Gi
+      size: 20Gi 
 
     resources:
       requests:
-        cpu: 250m
-        memory: 512Mi
-      limits:
         cpu: 500m
         memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+
+
+
