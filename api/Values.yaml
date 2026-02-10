@@ -4,8 +4,8 @@ prometheus:
   
   prometheus-node-exporter:
     enabled: true
-    tolerations:
-      - operator: "Exists"
+    service:
+      hostPort: 9101
   
   kube-state-metrics:
     enabled: true  
