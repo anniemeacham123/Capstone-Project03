@@ -3,7 +3,6 @@ prometheus:
     enabled: true  
   
   prometheus-node-exporter:
-    enabled: true 
     tolerations:
       - operator: "Exists"
   
