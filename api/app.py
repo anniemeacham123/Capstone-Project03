@@ -8,7 +8,7 @@ app = FastAPI(title="Capstone Ops API")
 Instrumentator().instrument(app).expose(app)
 
 class RunRequest(BaseModel):
-    playbook: str = "submit_jcl.yml"
+    playbook: str = "ping.yml"
     extra_vars: dict = {}
 
 @app.post("/run")
@@ -25,7 +25,7 @@ def run_playbook(req: RunRequest):
 
     result = ansible_runner.run(
         private_data_dir=private_data_dir,
-        playbook=req.playbook,
+        playbook=os.path.join(private_data_dir, "playbooks", req.playbook),
         inventory=os.path.join(private_data_dir, "inventory.ini"),
         extravars=req.extra_vars,
         ident=run_id,
