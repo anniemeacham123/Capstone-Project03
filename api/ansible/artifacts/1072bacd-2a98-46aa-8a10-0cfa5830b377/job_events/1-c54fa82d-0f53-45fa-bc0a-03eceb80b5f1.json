@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "c54fa82d-0f53-45fa-bc0a-03eceb80b5f1", "counter": 1, "stdout": "\u001b[0;31mERROR! the playbook: submit_jcl.yml could not be found\u001b[0m", "start_line": 0, "end_line": 1, "runner_ident": "1072bacd-2a98-46aa-8a10-0cfa5830b377", "created": "2026-02-10T21:53:04.577855+00:00"}
