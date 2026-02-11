@@ -19,8 +19,7 @@ prometheus:
     - job_name: "EC2-nodes"
       static_configs:
         - targets:
-          - 44.200.151.8:9101
-          - 34.207.84.106:9101 
+          - 100.54.5.71:8000
           
   # Prometheus server
   server:
@@ -43,6 +42,7 @@ prometheus:
       limits:
         cpu: 500m
         memory: 1Gi
+
 
 
 
