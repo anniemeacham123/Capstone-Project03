@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capstone Ops Console</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: #161b22;
+            --surface2: #1c2333;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --radius: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── Header ─────────────────────────────────────── */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .logo {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -.02em;
+        }
+
+        header .logo svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--accent);
+        }
+
+        .health-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .8rem;
+            padding: .3rem .7rem;
+            border-radius: 20px;
+            background: rgba(63, 185, 80, .12);
+            color: var(--green);
+            border: 1px solid rgba(63, 185, 80, .3);
+            transition: all .3s;
+        }
+
+        .health-badge.down {
+            background: rgba(248, 81, 73, .12);
+            color: var(--red);
+            border-color: rgba(248, 81, 73, .3);
+        }
+
+        .health-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse 2s infinite;
+        }
+
+        .health-badge.down .health-dot {
+            background: var(--red);
+            animation: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .4;
+            }
+        }
+
+        /* ── Layout ─────────────────────────────────────── */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            transition: border-color .2s;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+        }
+
+        .card h2 {
+            font-size: 1.05rem;
+            margin-bottom: .2rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .card h2 .icon {
+            font-size: 1.2rem;
+            width: 28px;
+            text-align: center;
+        }
+
+        .card .subtitle {
+            color: var(--text-muted);
+            font-size: .82rem;
+            margin-bottom: 1rem;
+            padding-left: 2.1rem;
+        }
+
+        /* ── Form elements ─────────────────────────────── */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .75rem;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: .3rem;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .form-group label {
+            font-size: .75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        input,
+        select {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: .55rem .75rem;
+            color: var(--text);
+            font-size: .9rem;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+            opacity: .6;
+        }
+
+        /* ── Buttons ────────────────────────────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .55rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0d1117;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+        }
+
+        /* ── Playbooks list ────────────────────────────── */
+        .playbook-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            padding-left: 2.1rem;
+        }
+
+        .chip {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: .3rem .8rem;
+            font-size: .8rem;
+            color: var(--text-muted);
+            font-family: 'SFMono-Regular', Consolas, monospace;
+        }
+
+        /* ── Output panel ──────────────────────────────── */
+        .output-panel {
+            margin-top: 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .output-panel.visible {
+            display: block;
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .6rem 1rem;
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border);
+            font-size: .8rem;
+        }
+
+        .output-header .status-tag {
+            font-weight: 600;
+            padding: .15rem .6rem;
+            border-radius: 4px;
+            font-size: .75rem;
+            text-transform: uppercase;
+        }
+
+        .status-tag.success {
+            background: rgba(63, 185, 80, .15);
+            color: var(--green);
+        }
+
+        .status-tag.failed {
+            background: rgba(248, 81, 73, .15);
+            color: var(--red);
+        }
+
+        .status-tag.running {
+            background: rgba(210, 153, 34, .15);
+            color: var(--yellow);
+        }
+
+        .output-body {
+            padding: 1rem;
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        /* ── Recap table ───────────────────────────────── */
+        .recap-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem;
+            margin-bottom: .75rem;
+        }
+
+        .recap-table th {
+            text-align: left;
+            color: var(--text-muted);
+            padding: .4rem .6rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: .7rem;
+            letter-spacing: .04em;
+        }
+
+        .recap-table td {
+            padding: .4rem .6rem;
+            border-bottom: 1px solid rgba(48, 54, 61, .5);
+            font-family: 'SFMono-Regular', Consolas, monospace;
+        }
+
+        .recap-table .val-ok {
+            color: var(--green);
+        }
+
+        .recap-table .val-fail {
+            color: var(--red);
+        }
+
+        .recap-table .val-changed {
+            color: var(--yellow);
+        }
+
+        /* ── stdout pre ────────────────────────────────── */
+        .stdout-block {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: .75rem 1rem;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: .78rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: var(--text-muted);
+            max-height: 280px;
+            overflow: auto;
+        }
+
+        /* ── Toggle ─────────────────────────────────────── */
+        .toggle-stdout {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            font-size: .78rem;
+            color: var(--accent);
+            cursor: pointer;
+            background: none;
+            border: none;
+            margin-bottom: .5rem;
+        }
+
+        .toggle-stdout:hover {
+            color: var(--accent-hover);
+        }
+
+        /* ── Metrics bar ───────────────────────────────── */
+        .metrics-bar {
+            display: flex;
+            gap: .5rem;
+            font-size: .8rem;
+            color: var(--text-muted);
+        }
+
+        .metrics-bar span {
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+        }
+
+        /* ── Spinner ────────────────────────────────────── */
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Responsive ─────────────────────────────────── */
+        @media (max-width: 640px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-group {
+                min-width: 100%;
+            }
+
+            header {
+                padding: .75rem 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        /* ── Section title ─────────────────────────────── */
+        .section-title {
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--text-muted);
+            margin: 2rem 0 .75rem;
+            padding-bottom: .4rem;
+            border-bottom: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════ Header -->
+    <header>
+        <div class="logo">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+            Capstone Ops
+        </div>
+        <div class="health-badge" id="healthBadge">
+            <span class="health-dot"></span>
+            <span id="healthText">Checking…</span>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ═══════════════════════════════ Available Playbooks -->
+        <div class="card" id="playbooksCard">
+            <h2><span class="icon">📂</span> Available Playbooks</h2>
+            <p class="subtitle">Whitelisted playbooks found on disk</p>
+            <div class="playbook-chips" id="playbookChips">
+                <span class="chip" style="color:var(--text-muted);border:none;">Loading…</span>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════ Quick Operations -->
+        <div class="section-title">Quick Operations</div>
+
+        <!-- Ping -->
+        <div class="card">
+            <h2><span class="icon">📡</span> Ping Mainframe</h2>
+            <p class="subtitle">Quick connectivity check to the mainframe host</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Target Host (optional)</label>
+                    <input type="text" id="pingHost" placeholder="e.g. 67.217.62.83" />
+                </div>
+                <button class="btn btn-primary" id="pingBtn" onclick="doPing()">
+                    Run Ping
+                </button>
+            </div>
+            <div class="output-panel" id="pingOutput"></div>
+        </div>
+
+        <!-- Create QSAM -->
+        <div class="card">
+            <h2><span class="icon">💾</span> Create QSAM Data Set</h2>
+            <p class="subtitle">Create a single sequential data set on z/OS</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Data Set Name (optional)</label>
+                    <input type="text" id="qsamName" placeholder="e.g. IBMUSER.MYDATA" />
+                </div>
+                <div class="form-group">
+                    <label>Target Host (optional)</label>
+                    <input type="text" id="qsamHost" placeholder="e.g. 67.217.62.83" />
+                </div>
+                <button class="btn btn-primary" id="qsamBtn" onclick="doCreateQsam()">
+                    Create
+                </button>
+            </div>
+            <div class="output-panel" id="qsamOutput"></div>
+        </div>
+
+        <!-- Create QSAM Multiple -->
+        <div class="card">
+            <h2><span class="icon">📚</span> Create Multiple QSAM Data Sets</h2>
+            <p class="subtitle">Batch-create several sequential data sets for a user</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>z/OS Username (optional)</label>
+                    <input type="text" id="multiUser" placeholder="e.g. IBMUSER" />
+                </div>
+                <div class="form-group">
+                    <label>Target Host (optional)</label>
+                    <input type="text" id="multiHost" placeholder="e.g. 67.217.62.83" />
+                </div>
+                <button class="btn btn-primary" id="multiBtn" onclick="doCreateQsamMultiple()">
+                    Create Multiple
+                </button>
+            </div>
+            <div class="output-panel" id="multiOutput"></div>
+        </div>
+
+        <!-- ═══════════════════════════════ Generic Runner -->
+        <div class="section-title">Advanced</div>
+
+        <div class="card">
+            <h2><span class="icon">⚙️</span> Run Any Playbook</h2>
+            <p class="subtitle">Execute an allowed playbook with custom extra vars</p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Playbook</label>
+                    <select id="runPlaybook"></select>
+                </div>
+                <div class="form-group">
+                    <label>Extra Vars (JSON, optional)</label>
+                    <input type="text" id="runExtraVars" placeholder='{"key": "value"}' />
+                </div>
+                <div class="form-group">
+                    <label>Target Host (optional)</label>
+                    <input type="text" id="runHost" placeholder="e.g. 67.217.62.83" />
+                </div>
+                <button class="btn btn-primary" id="runBtn" onclick="doRun()">
+                    Execute
+                </button>
+            </div>
+            <div class="output-panel" id="runOutput"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const API = window.location.origin;
+
+        // ── Health check ──────────────────────────────────
+        async function checkHealth() {
+            const badge = document.getElementById('healthBadge');
+            const text = document.getElementById('healthText');
+            try {
+                const r = await fetch(`${API}/health`);
+                const d = await r.json();
+                if (d.ok) {
+                    badge.classList.remove('down');
+                    text.textContent = 'API Online';
+                } else { throw new Error(); }
+            } catch {
+                badge.classList.add('down');
+                text.textContent = 'API Offline';
+            }
+        }
+
+        // ── Load playbooks ────────────────────────────────
+        async function loadPlaybooks() {
+            try {
+                const r = await fetch(`${API}/playbooks`);
+                const d = await r.json();
+                const chips = document.getElementById('playbookChips');
+                const sel = document.getElementById('runPlaybook');
+                chips.innerHTML = '';
+                sel.innerHTML = '';
+                d.playbooks.forEach(p => {
+                    chips.innerHTML += `<span class="chip">${p}</span>`;
+                    sel.innerHTML += `<option value="${p}">${p}</option>`;
+                });
+            } catch {
+                document.getElementById('playbookChips').innerHTML =
+                    '<span class="chip" style="color:var(--red)">Failed to load</span>';
+            }
+        }
+
+        // ── Render output panel ───────────────────────────
+        function renderOutput(panelId, data, isRunning) {
+            const panel = document.getElementById(panelId);
+            panel.classList.add('visible');
+
+            if (isRunning) {
+                panel.innerHTML = `
+      <div class="output-header">
+        <div class="metrics-bar"><span><span class="spinner"></span> Running playbook…</span></div>
+        <span class="status-tag running">Running</span>
+      </div>`;
+                return;
+            }
+
+            const result = data.detail || data;
+            const ok = result.status === 'successful';
+            const statusCls = ok ? 'success' : 'failed';
+
+            let recapHtml = '';
+            if (result.recap && Object.keys(result.recap).length) {
+                recapHtml = `<table class="recap-table">
+      <tr><th>Host</th><th>OK</th><th>Changed</th><th>Unreachable</th><th>Failed</th><th>Skipped</th><th>Rescued</th><th>Ignored</th></tr>`;
+                for (const [host, s] of Object.entries(result.recap)) {
+                    recapHtml += `<tr>
+        <td>${host}</td>
+        <td class="val-ok">${s.ok || 0}</td>
+        <td class="val-changed">${s.changed || 0}</td>
+        <td>${s.unreachable || 0}</td>
+        <td class="val-fail">${s.failed || 0}</td>
+        <td>${s.skipped || 0}</td>
+        <td>${s.rescued || 0}</td>
+        <td>${s.ignored || 0}</td>
+      </tr>`;
+                }
+                recapHtml += '</table>';
+            }
+
+            const uid = panelId + '_stdout';
+            const stdout = escapeHtml(result.stdout || '');
+            const stderr = escapeHtml(result.stderr || '');
+
+            panel.innerHTML = `
+    <div class="output-header">
+      <div class="metrics-bar">
+        <span>⏱ ${result.duration_seconds ?? '—'}s</span>
+        <span>↩ rc=${result.return_code ?? '—'}</span>
+      </div>
+      <span class="status-tag ${statusCls}">${result.status}</span>
+    </div>
+    <div class="output-body">
+      ${recapHtml}
+      <button class="toggle-stdout" onclick="toggleBlock('${uid}')">▶ Show stdout / stderr</button>
+      <div id="${uid}" style="display:none">
+        <div class="stdout-block">${stdout}</div>
+        ${stderr ? `<div class="stdout-block" style="margin-top:.5rem;border-color:rgba(248,81,73,.3)">${stderr}</div>` : ''}
+      </div>
+    </div>`;
+        }
+
+        function toggleBlock(id) {
+            const el = document.getElementById(id);
+            const btn = el.previousElementSibling;
+            if (el.style.display === 'none') {
+                el.style.display = 'block';
+                btn.textContent = '▼ Hide stdout / stderr';
+            } else {
+                el.style.display = 'none';
+                btn.textContent = '▶ Show stdout / stderr';
+            }
+        }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function setLoading(btnId, loading) {
+            const btn = document.getElementById(btnId);
+            btn.disabled = loading;
+            if (loading) {
+                btn.dataset.origText = btn.textContent;
+                btn.innerHTML = '<span class="spinner"></span> Running…';
+            } else {
+                btn.innerHTML = btn.dataset.origText;
+            }
+        }
+
+        // ── API calls ─────────────────────────────────────
+        async function doPing() {
+            setLoading('pingBtn', true);
+            renderOutput('pingOutput', null, true);
+            const host = document.getElementById('pingHost').value.trim();
+            const qs = host ? `?target_host=${encodeURIComponent(host)}` : '';
+            try {
+                const r = await fetch(`${API}/ops/ping${qs}`, { method: 'POST' });
+                const d = await r.json();
+                renderOutput('pingOutput', d, false);
+            } catch (e) {
+                renderOutput('pingOutput', { status: 'failed', return_code: -1, stdout: e.message, stderr: '', recap: {} }, false);
+            }
+            setLoading('pingBtn', false);
+        }
+
+        async function doCreateQsam() {
+            setLoading('qsamBtn', true);
+            renderOutput('qsamOutput', null, true);
+            const name = document.getElementById('qsamName').value.trim();
+            const host = document.getElementById('qsamHost').value.trim();
+            const params = new URLSearchParams();
+            if (name) params.set('data_set_name', name);
+            if (host) params.set('target_host', host);
+            const qs = params.toString() ? `?${params}` : '';
+            try {
+                const r = await fetch(`${API}/ops/create-qsam${qs}`, { method: 'POST' });
+                const d = await r.json();
+                renderOutput('qsamOutput', d, false);
+            } catch (e) {
+                renderOutput('qsamOutput', { status: 'failed', return_code: -1, stdout: e.message, stderr: '', recap: {} }, false);
+            }
+            setLoading('qsamBtn', false);
+        }
+
+        async function doCreateQsamMultiple() {
+            setLoading('multiBtn', true);
+            renderOutput('multiOutput', null, true);
+            const user = document.getElementById('multiUser').value.trim();
+            const host = document.getElementById('multiHost').value.trim();
+            const params = new URLSearchParams();
+            if (user) params.set('zos_username', user);
+            if (host) params.set('target_host', host);
+            const qs = params.toString() ? `?${params}` : '';
+            try {
+                const r = await fetch(`${API}/ops/create-qsam-multiple${qs}`, { method: 'POST' });
+                const d = await r.json();
+                renderOutput('multiOutput', d, false);
+            } catch (e) {
+                renderOutput('multiOutput', { status: 'failed', return_code: -1, stdout: e.message, stderr: '', recap: {} }, false);
+            }
+            setLoading('multiBtn', false);
+        }
+
+        async function doRun() {
+            setLoading('runBtn', true);
+            renderOutput('runOutput', null, true);
+            const playbook = document.getElementById('runPlaybook').value;
+            const evRaw = document.getElementById('runExtraVars').value.trim();
+            const host = document.getElementById('runHost').value.trim();
+
+            let extra_vars = null;
+            if (evRaw) {
+                try { extra_vars = JSON.parse(evRaw); } catch {
+                    renderOutput('runOutput', { status: 'failed', return_code: -1, stdout: 'Invalid JSON in Extra Vars', stderr: '', recap: {} }, false);
+                    setLoading('runBtn', false);
+                    return;
+                }
+            }
+
+            const body = { playbook };
+            if (extra_vars) body.extra_vars = extra_vars;
+            if (host) body.target_host = host;
+
+            try {
+                const r = await fetch(`${API}/run`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+                const d = await r.json();
+                renderOutput('runOutput', d, false);
+            } catch (e) {
+                renderOutput('runOutput', { status: 'failed', return_code: -1, stdout: e.message, stderr: '', recap: {} }, false);
+            }
+            setLoading('runBtn', false);
+        }
+
+        // ── Init ──────────────────────────────────────────
+        checkHealth();
+        loadPlaybooks();
+        setInterval(checkHealth, 15000);
+    </script>
+</body>
+
+</html>
